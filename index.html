@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EthioSite — Free Website Builder for Ethiopian Exporters</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <span class="logo">Ethio<span class="logo-highlight">Site</span></span>
+      <div class="nav-links">
+        <a href="#builder">Create Site</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Get Your Ethiopian Business Online — <span class="highlight">Free</span></h1>
+      <p class="hero-sub">Professional 1-page website for exporters, manufacturers, and service providers. No coding, no cost. Go live in 5 minutes.</p>
+      <a href="#builder" class="btn btn-primary">Create Your Free Site</a>
+      <p class="hero-meta">1,000+ Ethiopian businesses already listed</p>
+    </div>
+    <div class="hero-visual">
+      <div class="mockup-browser">
+        <div class="mockup-bar"><span></span><span></span><span></span></div>
+        <div class="mockup-body">
+          <div class="mockup-company">🇪🇹 Addis Spice Export PLC</div>
+          <div class="mockup-tagline">Premium Ethiopian spices — direct from farm to global buyers</div>
+          <div class="mockup-products">
+            <span>🌶 Berbere</span><span>🌿 Turmeric</span><span>🫚 Ginger</span>
+          </div>
+          <div class="mockup-contact">📧 info@addisspice.com | 📞 +251-911-000-000</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>5-Minute Setup</h3>
+        <p>Fill a form, get a live site instantly. No tech skills needed.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Mobile Ready</h3>
+        <p>Looks great on phones, tablets, and desktops.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>Export-Focused</h3>
+        <p>Showcase products, certifications, and shipping info.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔗</div>
+        <h3>Free Hosting</h3>
+        <p>We host it free, or download and host anywhere.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="builder" id="builder">
+    <div class="builder-inner">
+      <h2>Create Your Free Business Site</h2>
+      <p class="builder-sub">Fill this form and get a professional exporter website instantly.</p>
+      <form id="siteForm" class="site-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Business Name *</label>
+            <input type="text" id="companyName" placeholder="Addis Spice Export PLC" required>
+          </div>
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" id="ownerName" placeholder="Yonas Tadesse">
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="category" required>
+              <option value="">Select category...</option>
+              <option value="exporter">Exporter</option>
+              <option value="manufacturer">Manufacturer</option>
+              <option value="importer">Importer</option>
+              <option value="service">Service Provider</option>
+              <option value="hotel">Hotel / Travel</option>
+              <option value="retail">Retail / Shop</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>City *</label>
+            <input type="text" id="city" placeholder="Addis Ababa" required>
+          </div>
+          <div class="form-group full-width">
+            <label>Tagline</label>
+            <input type="text" id="tagline" placeholder="Premium Ethiopian spices — direct from farm to global buyers">
+          </div>
+          <div class="form-group full-width">
+            <label>About Your Business *</label>
+            <textarea id="description" rows="3" placeholder="Tell potential customers what you do, your experience, what makes you unique..." required></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label>Products / Services (one per line)</label>
+            <textarea id="products" rows="4" placeholder="🌶 Berbere spice blend&#10;🌿 Organic turmeric powder&#10;🫚 Premium ginger&#10;☕ Ethiopian coffee beans"></textarea>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Phone *</label>
+            <input type="text" id="phone" placeholder="+251-911-000-000" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="info@yourbusiness.com">
+          </div>
+          <div class="form-group">
+            <label>Website (if you have one)</label>
+            <input type="text" id="website" placeholder="yourbusiness.com">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp</label>
+            <input type="text" id="whatsapp" placeholder="+251-911-000-000">
+          </div>
+          <div class="form-group full-width">
+            <label>Social Media (comma separated)</label>
+            <input type="text" id="social" placeholder="facebook.com/yourpage, instagram.com/yourpage">
+          </div>
+          <div class="form-group full-width">
+            <label>Export Destinations (comma separated)</label>
+            <input type="text" id="destinations" placeholder="USA, UK, UAE, China, Saudi Arabia">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-large">
+            <span class="btn-text">Generate My Free Site</span>
+            <span class="btn-loader" style="display:none">Generating...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="preview-section" id="preview" style="display:none">
+    <div class="preview-header">
+      <h2>Your Site Is Ready!</h2>
+      <div class="preview-actions">
+        <button class="btn btn-primary" onclick="downloadSite()">⬇ Download HTML</button>
+        <button class="btn btn-secondary" onclick="copyEmbedCode()">📋 Copy URL</button>
+        <a href="#pricing" class="btn btn-premium">⭐ Upgrade to Premium</a>
+      </div>
+    </div>
+    <div class="preview-frame" id="previewFrame"></div>
+  </section>
+
+  <section class="pricing" id="pricing">
+    <h2>Simple Pricing</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card featured-free">
+        <h3>Free</h3>
+        <div class="price">0 <span>ETB</span></div>
+        <ul>
+          <li>✓ 1-page business site</li>
+          <li>✓ Mobile responsive</li>
+          <li>✓ Product showcase</li>
+          <li>✓ Contact form</li>
+          <li>✓ Free hosting</li>
+        </ul>
+        <a href="#builder" class="btn btn-primary">Start Free</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="badge">Best Value</div>
+        <h3>Premium</h3>
+        <div class="price">499 <span>ETB/mo</span></div>
+        <ul>
+          <li>✓ Everything in Free</li>
+          <li>✓ Custom domain (yourbusiness.com)</li>
+          <li>✓ E-commerce / Booking</li>
+          <li>✓ Analytics & lead tracking</li>
+          <li>✓ Multi-language (Amharic + English)</li>
+          <li>✓ WhatsApp live chat</li>
+          <li>✓ Priority support</li>
+        </ul>
+        <a href="#" class="btn btn-premium">Coming Soon</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Pro</h3>
+        <div class="price">999 <span>ETB/mo</span></div>
+        <ul>
+          <li>✓ Everything in Premium</li>
+          <li>✓ Up to 5 pages</li>
+          <li>✓ SEO optimization</li>
+          <li>✓ Google Maps integration</li>
+          <li>✓ Product catalog (up to 50)</li>
+          <li>✓ Email marketing</li>
+        </ul>
+        <a href="#" class="btn btn-secondary">Coming Soon</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <h2>FAQ</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <h4>Is it really free?</h4>
+        <p>Yes. Your 1-page site is completely free with no time limit. We earn when you upgrade for extra features.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I use my own domain?</h4>
+        <p>Yes, on the Premium plan. Free sites use an ethiosite.com subdomain.</p>
+      </div>
+      <div class="faq-item">
+        <h4>How do I update my site?</h4>
+        <p>Free sites can be regenerated anytime. Premium sites get a live editor.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>EthioSite — Get every Ethiopian business online.</p>
+  </footer>
+
+  <script src="js/templates.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
