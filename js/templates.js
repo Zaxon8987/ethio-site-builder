@@ -1,4 +1,4 @@
-const TEMPLATES = {
+export const TEMPLATES = {
   exporter: function(data) {
     const products = data.products.split('\n').filter(p => p.trim()).map(p => {
       const trimmed = p.trim();
@@ -677,14 +677,14 @@ ${data.whatsapp ? `<p><a href="https://wa.me/${data.whatsapp.replace(/[^0-9]/g, 
   }
 };
 
-function escapeHtml(str) {
+export function escapeHtml(str) {
   if (!str) return '';
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
 
-function generateSite(data) {
+export function generateSite(data) {
   const template = TEMPLATES[data.templateType] || TEMPLATES.exporter;
   let html = template(data);
   const seoTitle = data.seoTitle ? escapeHtml(data.seoTitle) : '';
