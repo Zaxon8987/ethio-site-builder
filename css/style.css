@@ -449,6 +449,67 @@ body {
   border-top: 1px solid #e8e8e8;
 }
 
+.input-with-ai {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.input-with-ai input,
+.input-with-ai textarea {
+  flex: 1;
+}
+.btn-sm {
+  padding: 8px 14px;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+.btn-ai {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-ai:hover {
+  opacity: .9;
+  transform: translateY(-1px);
+}
+.btn-ai:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+.lang-toggle {
+  background: #1a8a3f;
+  color: #fff !important;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 700 !important;
+  font-size: .8rem !important;
+  margin-left: 16px;
+}
+.lang-toggle:hover {
+  background: #147233;
+}
+.share-section {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.share-url-box {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.share-url-box input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: .8rem;
+  background: #f8f9fa;
+}
 @media (max-width: 768px) {
   .hero {
     grid-template-columns: 1fr;
