@@ -1,9 +1,40 @@
+const FIREBASE_CONFIG = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_PROJECT.firebaseapp.com',
+  projectId: 'YOUR_PROJECT',
+  storageBucket: 'YOUR_PROJECT.firebasestorage.app',
+  messagingSenderId: 'YOUR_SENDER_ID',
+  appId: 'YOUR_APP_ID'
+};
+
+let firebaseApp, auth, db;
+try {
+  firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+  auth = firebase.auth();
+  db = firebase.firestore();
+} catch (e) {
+  console.warn('Firebase init failed (placeholder config):', e.message);
+}
+
 const i18n = {
   am: {
     'nav.create': 'ድረ-ገጽ ይፍጠሩ',
     'nav.pricing': 'ዋጋ',
     'nav.faq': 'ጥያቄዎች',
-    'nav.lang': 'EN',
+    'nav.login': 'ግባ',
+    'nav.logout': 'ውጣ',
+    'nav.dashboard': 'የእኔ ጣቢያዎች',
+    'auth.login': 'ግባ',
+    'auth.signup': 'ተመዝገብ',
+    'auth.email': 'ኢሜይል',
+    'auth.password': 'የይለፍ ቃል',
+    'auth.login.btn': 'ግባ',
+    'auth.signup.btn': 'ተመዝገብ',
+    'auth.google': 'በGoogle ቀጥል',
+    'auth.or': 'ወይም',
+    'auth.error.invalid': 'ኢሜይል ወይም የይለፍ ቃል ትክክል አይደለም',
+    'auth.error.weak': 'የይለፍ ቃል ቢያንስ 6 ፊደላት መሆን አለበት',
+    'auth.error.exists': 'ይህ ኢሜይል ቀድሞ ተመዝግቧል',
     'hero.title': 'የኢትዮጵያ ንግድዎን በነጻ በመስመር ላይ ያቅርቡ',
     'hero.sub': 'ለኤክስፖርተሮች፣ አምራቾች እና አገልግሎት ሰጪዎች ፕሮፌሽናል ባለ-1-ገጽ ድረ-ገጽ። ኮድ አያስፈልግም፣ ምንም ወጪ የለም።',
     'hero.cta': 'ነፃ ድረ-ገጽዎን ይፍጠሩ',
@@ -32,15 +63,25 @@ const i18n = {
     'form.whatsapp': 'WhatsApp',
     'form.social': 'ማህበራዊ ሚዲያ (በነጠላ ሰረዝ ይለዩ)',
     'form.destinations': 'ወደ ውጭ የሚላኩባቸው አገራት',
+    'form.seo.title': 'SEO ሜታ አርዕስት (አማራጭ)',
+    'form.seo.desc': 'SEO ሜታ ገለጻ (አማራጭ)',
+    'form.og.image': 'የማህበራዊ ሚዲያ ምስል URL (አማራጭ)',
+    'form.advanced': 'የላቁ ቅንብሮች (ለAI ቁልፍ)',
+    'form.apikey': 'OpenAI / Claude / HuggingFace ቁልፍ (አማራጭ)',
+    'form.apikey.hint': 'በአካባቢዎ ይቀመጣል። ለእውነተኛ AI ይጠቅማል።',
+    'form.apiprovider': 'አገልግሎት ሰጪ',
     'form.generate': 'ነፃ ድረ-ገጽዎን ይፍጠሩ',
     'form.generating': 'በዝግጅት ላይ...',
     'form.ai': 'AI ይሙላ',
     'preview.title': 'ድረ-ገጽዎ ዝግጁ ነው!',
     'preview.download': 'HTML አውርድ',
     'preview.copy': 'አገናኝ ቅዳ',
+    'preview.save': 'አስቀምጥ',
     'preview.share': 'URL ለመጋራት',
     'preview.share.url': 'ከታች ያለውን አገናኝ ያጋሩ:',
     'preview.upgrade': 'ወደ ፕሪሚየም ያሻሽሉ',
+    'dashboard.title': 'የተቀመጡ ጣቢያዎቼ',
+    'dashboard.empty': 'ገና ምንም የተቀመጠ ጣቢያ የለም። ከላይ የመጀመሪያውን ይፍጠሩ!',
     'pricing.title': 'ቀላል ዋጋ',
     'pricing.free.title': 'ነፃ',
     'pricing.free.li1': '✓ ባለ-1-ገጽ ድረ-ገጽ',
@@ -73,46 +114,63 @@ const i18n = {
     'faq.q3': 'ድረ-ገጼን እንዴት አዘምናለሁ?',
     'faq.a3': 'ነፃ ጣቢያዎች በማንኛውም ጊዜ እንደገና ሊፈጠሩ ይችላሉ። ፕሪሚየም ጣቢያዎች የቀጥታ አርታኢ ያገኛሉ።',
     'footer': 'EthioSite — እያንዳንዱን የኢትዮጵያ ንግድ በመስመር ላይ ያቅርቡ',
+    'tpl.exporter': 'ኤክስፖርተር',
+    'tpl.manufacturer': 'አምራች',
+    'tpl.importer': 'አስመጪ',
+    'tpl.service': 'አገልግሎት ሰጪ',
     'tpl.hotel': 'ሆቴል / ጉዞ',
     'tpl.restaurant': 'ምግብ ቤት',
     'tpl.clinic': 'ክሊኒክ',
     'tpl.shop': 'ሱቅ',
-    'tpl.manufacturer': 'አምራች',
     'tpl.cafe': 'ካፌ',
+    'tpl.school': 'ትምህርት ቤት / ትምህርት',
+    'tpl.ngo': 'መንግሥታዊ ያልሆነ ድርጅት',
+    'tpl.farm': 'እርሻ / ግብርና',
+    'tpl.transport': 'ትራንስፖርት / ሎጅስቲክስ',
+    'tpl.other': 'ሌላ',
     'ai.generating': 'በማመንጨት ላይ...',
     'ai.error': 'እባክዎ መግለጫ ያስገቡ',
     'payment.success': 'ለዝማኔ እንደገና እንገናኝዎታለን!',
     'payment.premium.desc': 'የወርሃዊ ፕሪሚየም ዝማኔ',
     'payment.pro.desc': 'የወርሃዊ ፕሮ ዝማኔ',
-    'share.tooltip': 'አገናኝ ተቀድቷል!'
+    'share.tooltip': 'አገናኝ ተቀድቷል!',
+    'toast.saved': 'ጣቢያ በተሳካ ሁኔታ ተቀምጧል!',
+    'toast.deleted': 'ጣቢያ ተወግዷል',
+    'toast.loaded': 'ጣቢያ ተጭኗል',
+    'toast.login': 'በተሳካ ሁኔታ ገብተዋል',
+    'toast.logout': 'ወጥተዋል'
   }
 };
 
 let currentLang = 'en';
 let currentSiteHTML = '';
 let generatedSiteData = null;
+let currentUser = null;
+let userSites = [];
 
 function t(key) {
   if (currentLang === 'am' && i18n.am[key]) return i18n.am[key];
-  return key;
+  return null;
 }
 
 function setLang(lang) {
   currentLang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
-    if (lang === 'am' && i18n.am[key]) {
+    const translation = lang === 'am' ? i18n.am[key] : null;
+    if (translation) {
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-        el.placeholder = i18n.am[key];
+        el.placeholder = translation;
       } else {
-        el.textContent = i18n.am[key];
+        el.textContent = translation;
       }
     } else {
-      if (el.dataset.i18nFallback) {
+      const fb = el.dataset.i18nFallback;
+      if (fb) {
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-          el.placeholder = el.dataset.i18nFallback;
+          el.placeholder = fb;
         } else {
-          el.textContent = el.dataset.i18nFallback;
+          el.textContent = fb;
         }
       }
     }
@@ -121,9 +179,19 @@ function setLang(lang) {
   document.documentElement.lang = lang === 'am' ? 'am' : 'en';
 }
 
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
 function loadFromURL() {
   const hash = window.location.hash.slice(1);
-  if (!hash) return;
+  if (!hash) return false;
   try {
     const data = JSON.parse(atob(decodeURIComponent(hash)));
     if (data && data.companyName) {
@@ -143,33 +211,78 @@ function generateShareURL(data) {
   return `${window.location.origin}${window.location.pathname}#${encoded}`;
 }
 
-function generateAIContent(fieldId) {
+async function generateAIContent(fieldId) {
   const desc = document.getElementById('description').value.trim();
-  if (!desc && fieldId !== 'tagline') {
-    alert(t('ai.error'));
-    return;
-  }
   const btn = document.querySelector(`[data-ai="${fieldId}"]`);
-  if (btn) btn.disabled = true;
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+
+  const apiKey = document.getElementById('apiKey').value.trim();
+  const provider = document.getElementById('apiProvider').value;
+
+  if (apiKey) {
+    try {
+      const companyName = document.getElementById('companyName').value.trim() || 'my business';
+      const city = document.getElementById('city').value.trim() || 'Addis Ababa';
+      const category = document.getElementById('category').value || 'business';
+      const prompt = fieldId === 'tagline'
+        ? `Write a short, professional tagline (max 10 words) for ${companyName}, a ${category} in ${city}, Ethiopia. Return only the tagline.`
+        : `Write a professional business description (2-3 sentences) for ${companyName}, a ${category} based in ${city}, Ethiopia. Company context: ${desc || 'quality products and services'}. Return only the description.`;
+
+      let result = '';
+      if (provider === 'openai') {
+        const r = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], max_tokens: 150 })
+        });
+        const d = await r.json();
+        result = d.choices?.[0]?.message?.content?.trim() || '';
+      } else if (provider === 'claude') {
+        const r = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+          body: JSON.stringify({ model: 'claude-3-haiku-20240307', max_tokens: 150, messages: [{ role: 'user', content: prompt }] })
+        });
+        const d = await r.json();
+        result = d.content?.[0]?.text?.trim() || '';
+      } else if (provider === 'huggingface') {
+        const r = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body: JSON.stringify({ inputs: prompt, parameters: { max_new_tokens: 150 } })
+        });
+        const d = await r.json();
+        result = d[0]?.generated_text?.replace(prompt, '').trim() || '';
+      }
+      if (result) {
+        document.getElementById(fieldId).value = result.replace(/^["']|["']$/g, '');
+        if (btn) { btn.disabled = false; btn.innerHTML = '✨ <span>AI</span>'; }
+        return;
+      }
+    } catch (e) {
+      console.warn('AI API failed, falling back to template:', e.message);
+    }
+  }
+
   const templates = {
-    'tagline': [
+    tagline: [
       'Quality products, trusted service — delivered worldwide.',
       'Your reliable partner in Ethiopian exports.',
       'Ethiopian excellence, globally delivered.',
       'Crafted with care, shipped with pride.',
       'Connecting Ethiopian quality to the world.'
     ],
-    'description': [
-      `We are a dedicated Ethiopian business based in ${document.getElementById('city').value || 'Addis Ababa'}, specializing in high-quality products and services. Our commitment to excellence and customer satisfaction has made us a trusted name in the industry. We pride ourselves on our attention to detail, competitive pricing, and reliable delivery. Contact us today to learn how we can serve you.`,
-      `Based in ${document.getElementById('city').value || 'Addis Ababa'}, we are a growing Ethiopian enterprise focused on delivering exceptional value to our customers. With years of experience in our field, we understand the needs of both local and international clients. Our team is dedicated to maintaining the highest standards of quality and service excellence.`,
-      `Welcome to our business! We are a ${document.getElementById('city').value || 'Addis Ababa'}-based Ethiopian company committed to providing top-quality products and professional services. Our reputation is built on trust, reliability, and customer-first approach. We serve clients across Ethiopia and international markets with dedication and integrity.`
+    description: [
+      `We are a dedicated Ethiopian business based in ${document.getElementById('city').value || 'Addis Ababa'}, specializing in high-quality products and services. Our commitment to excellence and customer satisfaction has made us a trusted name in the industry.`,
+      `Based in ${document.getElementById('city').value || 'Addis Ababa'}, we are a growing Ethiopian enterprise focused on delivering exceptional value. With years of experience, we understand the needs of both local and international clients.`,
+      `Welcome to our business! We are a ${document.getElementById('city').value || 'Addis Ababa'}-based Ethiopian company committed to providing top-quality products and professional services.`
     ]
   };
   setTimeout(() => {
     const pool = templates[fieldId] || templates.description;
     const text = pool[Math.floor(Math.random() * pool.length)];
     document.getElementById(fieldId).value = text;
-    if (btn) btn.disabled = false;
+    if (btn) { btn.disabled = false; btn.innerHTML = '✨ <span>AI</span>'; }
   }, 400);
 }
 
@@ -186,7 +299,7 @@ function initChapaCheckout(plan, amount) {
     email: email,
     first_name: name.split(' ')[0],
     last_name: name.split(' ').slice(1).join(' '),
-    title: plan === 'premium' ? t('payment.premium.desc') : t('payment.pro.desc'),
+    title: plan === 'premium' ? t('payment.premium.desc') || 'Premium Monthly Subscription' : t('payment.pro.desc') || 'Pro Monthly Subscription',
     phone: phone,
     callback_url: window.location.origin + window.location.pathname + '?payment=' + txRef,
     return_url: window.location.origin + window.location.pathname + '?success=' + plan
@@ -194,8 +307,199 @@ function initChapaCheckout(plan, amount) {
   const chapaURL = `https://checkout.chapa.co/checkout/payment/${params.toString()}`;
   window.open(chapaURL, '_blank');
   setTimeout(() => {
-    if (confirm(t('payment.success'))) {}
+    if (confirm(t('payment.success') || 'We will contact you for the upgrade!')) {}
   }, 2000);
+}
+
+async function saveSite() {
+  if (!currentUser || !generatedSiteData) {
+    showToast('Please sign in to save sites');
+    return;
+  }
+  const data = { ...generatedSiteData, html: currentSiteHTML, savedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  try {
+    const docRef = await db.collection('sites').add({
+      userId: currentUser.uid,
+      ...data
+    });
+    data.id = docRef.id;
+    userSites.unshift(data);
+    renderDashboard();
+    showToast(t('toast.saved') || 'Site saved!');
+  } catch (e) {
+    console.error('Save error:', e);
+    showToast('Error saving site');
+  }
+}
+
+async function deleteSite(siteId) {
+  if (!confirm('Delete this site?')) return;
+  try {
+    await db.collection('sites').doc(siteId).delete();
+    userSites = userSites.filter(s => s.id !== siteId);
+    renderDashboard();
+    showToast(t('toast.deleted') || 'Site deleted');
+  } catch (e) {
+    console.error('Delete error:', e);
+  }
+}
+
+function loadSite(site) {
+  if (!site) return;
+  generatedSiteData = site;
+  currentSiteHTML = site.html || '';
+  Object.keys(site).forEach(key => {
+    if (key === 'id' || key === 'savedAt' || key === 'html' || key === 'userId') return;
+    const el = document.getElementById(key);
+    if (el) el.value = site[key];
+  });
+  if (currentSiteHTML) {
+    showPreview(currentSiteHTML);
+    const shareURL = generateShareURL(site);
+    const shareEl = document.getElementById('shareURL');
+    if (shareEl) {
+      shareEl.value = shareURL;
+      document.getElementById('shareSection').style.display = 'block';
+    }
+  }
+  document.getElementById('builder').scrollIntoView({ behavior: 'smooth' });
+  showToast(t('toast.loaded') || 'Site loaded');
+}
+
+function renderDashboard() {
+  const container = document.getElementById('sitesList');
+  if (!container) return;
+  if (userSites.length === 0) {
+    container.innerHTML = `<div class="sites-empty">${t('dashboard.empty') || 'No saved sites yet. Create your first site above!'}</div>`;
+    return;
+  }
+  container.innerHTML = userSites.map(site => `
+    <div class="site-card">
+      <h4>${escapeHtml(site.companyName || 'Untitled')}</h4>
+      <div class="site-meta">${escapeHtml(site.category || '')} — ${escapeHtml(site.city || '')}</div>
+      <div class="site-card-actions">
+        <button class="btn btn-primary" onclick="loadSite(${JSON.stringify(site).replace(/"/g, '&quot;')})">📂 Load</button>
+        <button class="btn btn-secondary" onclick="previewSavedSite('${escapeHtmlAttr(site.id)}')">👁 Preview</button>
+        <button class="btn btn-danger" onclick="deleteSite('${site.id}')">🗑 Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function previewSavedSite(siteId) {
+  const site = userSites.find(s => s.id === siteId);
+  if (site && site.html) {
+    currentSiteHTML = site.html;
+    showPreview(site.html);
+    document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+/* Auth handlers */
+function showAuthModal(tab) {
+  document.getElementById('authModal').style.display = 'flex';
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.modal-tab[data-tab="${tab}"]`)?.classList.add('active');
+  document.getElementById('authError').style.display = 'none';
+  const btn = document.getElementById('authSubmitBtn');
+  btn.textContent = tab === 'login' ? (t('auth.login.btn') || 'Sign In') : (t('auth.signup.btn') || 'Sign Up');
+}
+
+async function handleAuth(email, password, isLogin) {
+  try {
+    if (isLogin) {
+      await auth.signInWithEmailAndPassword(email, password);
+    } else {
+      await auth.createUserWithEmailAndPassword(email, password);
+    }
+    document.getElementById('authModal').style.display = 'none';
+  } catch (e) {
+    const errEl = document.getElementById('authError');
+    errEl.style.display = 'block';
+    if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+      errEl.textContent = t('auth.error.invalid') || 'Invalid email or password';
+    } else if (e.code === 'auth/weak-password') {
+      errEl.textContent = t('auth.error.weak') || 'Password must be at least 6 characters';
+    } else if (e.code === 'auth/email-already-in-use') {
+      errEl.textContent = t('auth.error.exists') || 'Email already registered';
+    } else {
+      errEl.textContent = e.message;
+    }
+  }
+}
+
+async function handleGoogleSignIn() {
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await auth.signInWithPopup(provider);
+    document.getElementById('authModal').style.display = 'none';
+  } catch (e) {
+    console.error('Google sign-in error:', e);
+  }
+}
+
+function updateAuthUI(user) {
+  currentUser = user;
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const userBadge = document.getElementById('userBadge');
+  const dashboardLink = document.getElementById('dashboardLink');
+  const saveBtn = document.getElementById('saveSiteBtn');
+
+  if (user) {
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'inline';
+    userBadge.style.display = 'inline';
+    userBadge.textContent = user.email;
+    dashboardLink.style.display = 'inline';
+    if (saveBtn) saveBtn.style.display = 'inline-block';
+    showToast(t('toast.login') || 'Signed in');
+    loadUserSites();
+  } else {
+    loginBtn.style.display = 'inline';
+    logoutBtn.style.display = 'none';
+    userBadge.style.display = 'none';
+    dashboardLink.style.display = 'none';
+    if (saveBtn) saveBtn.style.display = 'none';
+    userSites = [];
+    renderDashboard();
+    document.getElementById('dashboard').style.display = 'none';
+  }
+}
+
+async function loadUserSites() {
+  if (!currentUser) return;
+  try {
+    const snap = await db.collection('sites')
+      .where('userId', '==', currentUser.uid)
+      .orderBy('savedAt', 'desc')
+      .get();
+    userSites = [];
+    snap.forEach(doc => {
+      userSites.push({ id: doc.id, ...doc.data() });
+    });
+    renderDashboard();
+    document.getElementById('dashboard').style.display = userSites.length > 0 ? 'block' : 'none';
+  } catch (e) {
+    if (e.code === 'failed-precondition') {
+      try {
+        const snap = await db.collection('sites')
+          .where('userId', '==', currentUser.uid)
+          .get();
+        userSites = [];
+        snap.forEach(doc => {
+          userSites.push({ id: doc.id, ...doc.data() });
+        });
+        userSites.sort((a, b) => (b.savedAt?.toMillis?.() || 0) - (a.savedAt?.toMillis?.() || 0));
+        renderDashboard();
+        document.getElementById('dashboard').style.display = userSites.length > 0 ? 'block' : 'none';
+      } catch (e2) {
+        console.error('Load sites error:', e2);
+      }
+    } else {
+      console.error('Load sites error:', e);
+    }
+  }
 }
 
 function init() {
@@ -206,17 +510,70 @@ function init() {
       setLang(currentLang === 'en' ? 'am' : 'en');
     });
   }
+
   document.querySelectorAll('[data-ai]').forEach(btn => {
     btn.addEventListener('click', function() {
       generateAIContent(this.dataset.ai);
     });
   });
+
   document.querySelectorAll('[data-chapa]').forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.preventDefault();
       initChapaCheckout(this.dataset.chapa, parseInt(this.dataset.amount));
     });
   });
+
+  document.getElementById('loginBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAuthModal('login');
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    auth.signOut();
+    showToast(t('toast.logout') || 'Signed out');
+  });
+
+  document.getElementById('authModalClose').addEventListener('click', function() {
+    document.getElementById('authModal').style.display = 'none';
+  });
+
+  document.getElementById('authModal').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  document.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('authError').style.display = 'none';
+      const btn = document.getElementById('authSubmitBtn');
+      btn.textContent = this.dataset.tab === 'login' ? (t('auth.login.btn') || 'Sign In') : (t('auth.signup.btn') || 'Sign Up');
+    });
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const isLogin = document.querySelector('.modal-tab.active').dataset.tab === 'login';
+    handleAuth(email, password, isLogin);
+  });
+
+  document.getElementById('googleSignInBtn').addEventListener('click', handleGoogleSignIn);
+
+  document.getElementById('dashboardLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  if (auth) {
+    auth.onAuthStateChanged(user => {
+      updateAuthUI(user);
+    });
+  }
+
   if (window.location.hash) {
     loadFromURL();
   }
@@ -248,7 +605,10 @@ document.getElementById('siteForm').addEventListener('submit', function(e) {
     website: document.getElementById('website').value.trim(),
     whatsapp: document.getElementById('whatsapp').value.trim(),
     social: document.getElementById('social').value.trim(),
-    destinations: document.getElementById('destinations').value.trim()
+    destinations: document.getElementById('destinations').value.trim(),
+    seoTitle: document.getElementById('seoTitle').value.trim(),
+    seoDesc: document.getElementById('seoDesc').value.trim(),
+    ogImage: document.getElementById('ogImage').value.trim()
   };
   generatedSiteData = data;
 
@@ -266,8 +626,6 @@ document.getElementById('siteForm').addEventListener('submit', function(e) {
     btnText.style.display = 'inline';
     btnLoader.style.display = 'none';
     btn.disabled = false;
-
-    gtag_event('site_generated', { category: data.category, template: data.templateType });
   }, 800);
 });
 
@@ -299,9 +657,9 @@ function copyEmbedCode() {
     navigator.clipboard.writeText(shareEl.value).then(() => {
       const btn = document.querySelector('.copy-btn');
       if (btn) {
-        const orig = btn.textContent;
-        btn.textContent = t('share.tooltip') || 'Copied!';
-        setTimeout(() => btn.textContent = orig, 2000);
+        const orig = btn.innerHTML;
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => btn.innerHTML = orig, 2000);
       }
     }).catch(() => {
       prompt('Copy this URL:', shareEl.value);
@@ -309,9 +667,12 @@ function copyEmbedCode() {
   }
 }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function escapeHtmlAttr(str) {
   if (!str) return '';
   return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
-
-function gtag_event() {}
